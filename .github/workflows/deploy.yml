@@ -1,0 +1,21 @@
+name: Deploy Beaconchain.us
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        env:
+          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          echo "$DEPLOY_KEY" > key.pem
+          chmod 600 key.pem
+          rsync -avz -e "ssh -i key.pem -o StrictHostKeyChecking=no" ./ user@$DEPLOY_HOST:/var/www/beaconchain.us/
