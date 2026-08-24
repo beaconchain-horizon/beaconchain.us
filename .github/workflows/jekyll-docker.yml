@@ -21,12 +21,12 @@ Horizon is an open‑source, security‑hardened blockchain monitoring platform 
 
 ---
 
-## 🏆 Global Recognition
+## 🏆 Performance Highlights
 
-- **Ranked #3** among blockchain explorers worldwide (May 2026 evaluation)
-- **Perfect security score** of 10/10
-- Supports **100,000+ validators** simultaneously
-- **72ms average response time** for validator queries
+- **Built for scale**: Architecture designed to handle **100,000+ validators** simultaneously.
+- **Fast query response**: Optimized for **low-latency (~72ms)** validator status queries (measured in internal benchmarks).
+- **Security-first**: Implements **Merkle proofs** and **ECDSA signatures** for tamper-proof license verification.
+- **Offline-ready**: Fully functional in offline environments with SQLite and IndexedDB caching.
 
 ---
 
@@ -45,3 +45,44 @@ Horizon is an open‑source, security‑hardened blockchain monitoring platform 
 ---
 
 ## 🏗️ Architecture
+
+Horizon Core Engine is designed with a **layered architecture** to ensure scalability, security, and offline resilience. The system is divided into the following core layers:
+
+### 1. API Layer (RESTful)
+- Handles all incoming HTTP requests.
+- Routes are organized under `/api/v1/`.
+- Supports JSON responses with proper HTTP status codes.
+
+### 2. Core Engine (Business Logic)
+- Contains the main logic for validator management and license generation.
+- Implements **Merkle Tree** generation for provable data integrity.
+- Generates and verifies **ECDSA digital signatures** for license validation.
+
+### 3. Storage Layer
+- Uses **SQLite** for local, zero-dependency storage.
+- Provides offline-first capabilities, allowing the system to function without external database servers.
+- Tables for `customers`, `payments`, `validators`, and `licenses`.
+
+### 4. Security Layer
+- **CSP (Content Security Policy)** with nonce-based protection.
+- **SHA-256** hashing for data integrity checks.
+- **Merkle Proofs** to prevent data tampering.
+- **ECDSA** signatures to ensure license authenticity.
+
+### 5. Frontend Integration (PWA)
+- **Offline-first** design with **IndexedDB** caching.
+- **Virtual Scrolling** for smooth rendering of 100,000+ validators.
+- Progressive Web App (PWA) support with `manifest.json` and service worker (`sw.js`).
+
+---
+
+### 📊 Data Flow Diagram
+
+```mermaid
+graph TD
+    Client[Client / PWA] -->|API Request| API[API Layer]
+    API --> Core[Core Engine]
+    Core --> Storage[(SQLite Database)]
+    Core --> Security[Security Layer]
+    Security -->|Merkle Proof + ECDSA| Core
+    Core -->|Response| Client
