@@ -1,7 +1,7 @@
 {
   "name": "Beaconchain Horizon",
   "short_name": "Horizon",
-  "description": "World #3 Blockchain Monitor · 100K Validators · 10/10 Security",
+  "description": "High-performance Blockchain Monitor with 100K Validator support, real-time data, and secure architecture.",
   "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
