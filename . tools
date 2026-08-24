@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="description" content="36 offline IT & security tools – Horizon Toolbox. No backend, no tracking, works offline.">
-  <title>Horizon Toolbox • 36 Offline Tools</title>
+  <meta name="description" content="26 offline IT & security tools – Horizon Toolbox. No backend, no tracking, works offline.">
+  <title>Horizon Toolbox • 26 Offline Tools</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -43,7 +43,7 @@
 <div class="container">
   <div class="header">
     <h1><i class="fas fa-toolbox"></i> Horizon Toolbox</h1>
-    <p>36 offline IT & security tools • No backend • No tracking • Web Crypto API</p>
+    <p>26 offline IT & security tools • No backend • No tracking • Web Crypto API</p>
   </div>
   <div class="search-bar">
     <input type="text" id="searchInput" placeholder="Search tool... (e.g., AES, subnet, hash)">
@@ -55,7 +55,7 @@
   </div>
 </div>
 <script>
-  // ---------- 36 tools definition ----------
+  // ---------- 26 tools definition ----------
   const tools = [
     // Cryptography
     { id: "aesEnc", category: "Cryptography", name: "AES-GCM Encrypt", icon: "fas fa-lock", inputs: [{ label: "Plaintext", type: "text", id: "aesPlain", default: "Secret message" }, { label: "Password", type: "password", id: "aesPass", default: "mypass123" }], action: async (vals) => await aesEncrypt(vals[1], vals[0]) },
