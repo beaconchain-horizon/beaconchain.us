@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Horizon – Sovereign Validator Dashboard | Live from validators.json | Offline‑first | 10/10 Security">
+  <meta name="description" content="Horizon – Sovereign Validator Dashboard | Live from validators.json | Offline‑first | Security-first Architecture">
   <meta name="theme-color" content="#0a0f1e">
   <meta name="author" content="Mahdi Amolimoghaddam">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://api.coingecko.com; img-src 'self' data: https:; frame-src 'none';">
@@ -151,6 +151,24 @@
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: #141c2c; }
     ::-webkit-scrollbar-thumb { background: #4f9eff; border-radius: 10px; }
+    
+    /* Toast Styling */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -159,11 +177,11 @@
   <div class="hero-brand">
     <div class="telescope-icon">🔭</div>
     <h1>Horizon</h1>
-    <p>Sovereign · Offline‑First · 10/10 Security</p>
+    <p>Sovereign · Offline‑First · Security-first</p>
     <div class="badge-strip">
       <div class="pill"><i class="fab fa-ethereum"></i> ETH: <span id="ethPrice">–</span></div>
       <div class="pill"><i class="fas fa-chart-line"></i> Blocks proposed: <span id="totalBlocksHeader">0</span></div>
-      <div class="pill"><i class="fas fa-shield-alt"></i> Perfect Security Score</div>
+      <div class="pill"><i class="fas fa-shield-alt"></i> Security-first Architecture</div>
       <div class="pill"><i class="fas fa-database"></i> Offline cache</div>
     </div>
   </div>
@@ -236,26 +254,76 @@
   </div>
 </div>
 
+<div id="toast">Copied!</div>
+
 <script>
+  // ========== INDEXEDDB CACHE (Real Offline Support) ==========
+  const DB_NAME = 'HorizonCache';
+  const STORE_NAME = 'validators';
+  
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME);
+        }
+      };
+      request.onsuccess = (event) => resolve(event.target.result);
+      request.onerror = (event) => reject(event.target.error);
+    });
+  }
+
+  async function cacheData(data) {
+    try {
+      const db = await openDB();
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put(data, 'validatorsData');
+      await tx.complete;
+    } catch (e) { console.warn('Cache write failed', e); }
+  }
+
+  async function getCachedData() {
+    try {
+      const db = await openDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const req = tx.objectStore(STORE_NAME).get('validatorsData');
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) { return null; }
+  }
+
   // ========== LOAD VALIDATOR DATA FROM validators.json ==========
   async function loadValidatorData() {
+    // First check cache
+    const cached = await getCachedData();
+    
     try {
       const response = await fetch('validators.json');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      return data;
+      await cacheData(data); // Save to cache for offline use
+      return { data: data, source: 'network' };
     } catch (error) {
-      console.error('Failed to load validators.json:', error);
+      console.error('Failed to load validators.json, using cache:', error);
+      if (cached) return { data: cached, source: 'cache' };
       return null;
     }
   }
 
   async function renderDashboard() {
-    const data = await loadValidatorData();
-    if (!data) {
-      document.getElementById('validatorTableBody').innerHTML = '<tr><td colspan="10" style="text-align:center;">⚠️ Failed to load validators.json. Make sure the file exists in the same directory.</td></tr>';
+    const result = await loadValidatorData();
+    const tbody = document.getElementById('validatorTableBody');
+    
+    if (!result) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">⚠️ Failed to load validators.json. Make sure the file exists in the same directory.</td></tr>';
       return;
     }
+    
+    const { data, source } = result;
     const validators = data.validators;
     const summary = data;
 
@@ -265,7 +333,6 @@
     document.getElementById('totalBlocks').innerText = summary.totalBlocksProposed || 0;
     document.getElementById('totalBlocksHeader').innerText = summary.totalBlocksProposed || 0;
 
-    const tbody = document.getElementById('validatorTableBody');
     tbody.innerHTML = '';
     for (const v of validators) {
       const row = tbody.insertRow();
@@ -280,6 +347,10 @@
       row.insertCell(7).innerText = (inc['14d'] || 0).toFixed(4);
       row.insertCell(8).innerText = (inc['30d'] || 0).toFixed(4);
       row.insertCell(9).innerText = (inc.total || 0).toFixed(4);
+    }
+    
+    if (source === 'cache') {
+      tbody.insertAdjacentHTML('beforebegin', '<div style="background: rgba(250,204,21,0.1); padding: 0.5rem; border-radius: 8px; margin-bottom: 1rem; color: #fde047;"><i class="fas fa-database"></i> Showing cached data (offline)</div>');
     }
   }
 
@@ -312,6 +383,13 @@
     }
   }
 
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.innerText = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
   window.addEventListener('load', () => {
     renderDashboard();
     fetchEthPrice();
@@ -323,10 +401,11 @@
     document.getElementById('refreshBtn').addEventListener('click', () => {
       renderDashboard();
     });
-    document.getElementById('collabBtn').addEventListener('click', () => alert('📧 Email: beaconchain@beaconchain.us'));
+    document.getElementById('collabBtn').addEventListener('click', () => showToast('📧 Email: beaconchain@beaconchain.us'));
     document.getElementById('donateBtn').addEventListener('click', () => {
-      navigator.clipboard.writeText('0x4E94F10F0a34a0DF229e68d5902644046258D678');
-      alert('Wallet address copied!');
+      navigator.clipboard.writeText('0x4E94F10F0a34a0DF229e68d5902644046258D678').then(() => {
+        showToast('✅ Wallet address copied!');
+      });
     });
   });
 </script>
