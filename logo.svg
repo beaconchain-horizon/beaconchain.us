@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f9eff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c084fc;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4f9eff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#4f9eff;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background glow -->
+  <circle cx="100" cy="100" r="90" fill="url(#glow)" />
+
+  <!-- Outer rotating ring -->
+  <g transform="translate(100,100)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+      <circle cx="0" cy="0" r="70" fill="none" stroke="#4f9eff" stroke-width="2" stroke-dasharray="8 6" opacity="0.6" />
+    </g>
+  </g>
+
+  <!-- Middle rotating ring (opposite direction) -->
+  <g transform="translate(100,100)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="6s" repeatCount="indefinite" />
+      <circle cx="0" cy="0" r="55" fill="none" stroke="#c084fc" stroke-width="2.5" stroke-dasharray="12 8" opacity="0.7" />
+    </g>
+  </g>
+
+  <!-- Inner rotating ring -->
+  <g transform="translate(100,100)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+      <circle cx="0" cy="0" r="38" fill="none" stroke="#4ade80" stroke-width="2" stroke-dasharray="6 10" opacity="0.8" />
+    </g>
+  </g>
+
+  <!-- Floating dots on outer ring -->
+  <g transform="translate(100,100)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+      <circle cx="70" cy="0" r="4" fill="#4f9eff">
+        <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="70" r="3" fill="#4f9eff">
+        <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="-70" cy="0" r="4" fill="#4f9eff">
+        <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="-70" r="3" fill="#4f9eff">
+        <animate attributeName="r" values="2;4;2" dur="1.8s" repeatCount="indefinite" />
+      </circle>
+    </g>
+  </g>
+
+  <!-- Floating dots on middle ring -->
+  <g transform="translate(100,100)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="6s" repeatCount="indefinite" />
+      <circle cx="55" cy="0" r="3" fill="#c084fc">
+        <animate attributeName="r" values="2;4;2" dur="1.7s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="55" r="2.5" fill="#c084fc">
+        <animate attributeName="r" values="2;3.5;2" dur="2.2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="-55" cy="0" r="3" fill="#c084fc">
+        <animate attributeName="r" values="2;4;2" dur="1.9s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="0" cy="-55" r="2.5" fill="#c084fc">
+        <animate attributeName="r" values="2;3.5;2" dur="2.1s" repeatCount="indefinite" />
+      </circle>
+    </g>
+  </g>
+
+  <!-- Center core -->
+  <circle cx="100" cy="100" r="22" fill="url(#grad1)" opacity="0.9" />
+  <circle cx="100" cy="100" r="18" fill="#0a0f1e" />
+  <text x="100" y="105" font-family="'Inter', Arial, sans-serif" font-size="18" font-weight="900" fill="url(#grad1)" text-anchor="middle" dominant-baseline="middle">H</text>
+
+  <!-- Pulsing core glow -->
+  <circle cx="100" cy="100" r="25" fill="none" stroke="#4f9eff" stroke-width="1" opacity="0.6">
+    <animate attributeName="r" values="22;28;22" dur="2s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Small connection lines between rings (static) -->
+  <g opacity="0.15">
+    <line x1="100" y1="30" x2="100" y2="45" stroke="#4f9eff" stroke-width="1" />
+    <line x1="170" y1="100" x2="155" y2="100" stroke="#4f9eff" stroke-width="1" />
+    <line x1="100" y1="170" x2="100" y2="155" stroke="#4f9eff" stroke-width="1" />
+    <line x1="30" y1="100" x2="45" y2="100" stroke="#4f9eff" stroke-width="1" />
+  </g>
+</svg>

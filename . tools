@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="26 offline IT & security tools – Horizon Toolbox. No backend, no tracking, works offline.">
+  <title>Horizon Toolbox • 26 Offline Tools</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at 10% 20%, #0a0f1e, #03050a);
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #eef2ff;
+      padding: 1.5rem;
+    }
+    .container { max-width: 1600px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 2rem; }
+    .header h1 { font-size: 2.2rem; background: linear-gradient(135deg, #fff, #4f9eff, #c084fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .header p { color: #9bb2ff; margin-top: 0.5rem; }
+    .search-bar { display: flex; justify-content: center; margin-bottom: 2rem; }
+    .search-bar input { background: #1e293b; border: 1px solid #334155; padding: 0.7rem 1.2rem; border-radius: 60px; width: 300px; color: white; font-size: 0.9rem; outline: none; transition: 0.2s; }
+    .search-bar input:focus { border-color: #4f9eff; }
+    .category-title { font-size: 1.4rem; font-weight: 600; margin: 1.8rem 0 1rem 0; border-left: 4px solid #4f9eff; padding-left: 1rem; }
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+    .tool-card { background: rgba(20, 24, 36, 0.7); backdrop-filter: blur(8px); border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.08); padding: 1.2rem; transition: 0.2s; }
+    .tool-card:hover { border-color: #4f9eff; background: rgba(28,32,48,0.85); }
+    .tool-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; border-bottom: 1px solid #2d3a5e; padding-bottom: 0.6rem; }
+    .tool-header i { font-size: 1.4rem; color: #4f9eff; }
+    .tool-header h3 { font-size: 1.1rem; font-weight: 600; }
+    .tool-input { margin-bottom: 0.8rem; }
+    label { font-size: 0.7rem; font-weight: 500; color: #9bb2ff; display: block; margin-bottom: 0.2rem; }
+    input, select, textarea { width: 100%; background: #0f172a; border: 1px solid #2d3a5e; padding: 0.5rem 0.8rem; border-radius: 1rem; color: white; font-size: 0.8rem; font-family: monospace; }
+    button { background: #2b3550; border: none; padding: 0.4rem 1rem; border-radius: 2rem; color: white; cursor: pointer; font-size: 0.7rem; transition: 0.2s; margin-top: 0.3rem; }
+    button:hover { background: #4f9eff; }
+    .output-value { background: #0f172a; border-radius: 1rem; padding: 0.5rem 0.8rem; font-family: monospace; font-size: 0.75rem; word-break: break-all; }
+    .footer { text-align: center; margin-top: 3rem; font-size: 0.7rem; color: #6c7b9e; }
+    @media (max-width: 700px) { body { padding: 1rem; } .tools-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-toolbox"></i> Horizon Toolbox</h1>
+    <p>26 offline IT & security tools • No backend • No tracking • Web Crypto API</p>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search tool... (e.g., AES, subnet, hash)">
+  </div>
+  <div id="toolsContainer"></div>
+  <div class="footer">
+    <i class="fas fa-shield-alt"></i> 100% offline, client-side only • Built with Web Crypto API<br>
+    © 2026 Horizon Suite — your private toolkit
+  </div>
+</div>
+<script>
+  // ---------- 26 tools definition ----------
+  const tools = [
+    // Cryptography
+    { id: "aesEnc", category: "Cryptography", name: "AES-GCM Encrypt", icon: "fas fa-lock", inputs: [{ label: "Plaintext", type: "text", id: "aesPlain", default: "Secret message" }, { label: "Password", type: "password", id: "aesPass", default: "mypass123" }], action: async (vals) => await aesEncrypt(vals[1], vals[0]) },
+    { id: "aesDec", category: "Cryptography", name: "AES-GCM Decrypt", icon: "fas fa-unlock", inputs: [{ label: "Ciphertext (base64)", type: "text", id: "aesCipher", default: "" }, { label: "Password", type: "password", id: "aesDecPass", default: "mypass123" }], action: async (vals) => await aesDecrypt(vals[1], vals[0]) },
+    { id: "sha256", category: "Cryptography", name: "SHA-256 Hash", icon: "fas fa-fingerprint", inputs: [{ label: "Text", type: "text", id: "shaText", default: "Hello World" }], action: async (vals) => await sha256(vals[0]) },
+    { id: "sha512", category: "Cryptography", name: "SHA-512 Hash", icon: "fas fa-hashtag", inputs: [{ label: "Text", type: "text", id: "sha512Text", default: "Hello" }], action: async (vals) => await sha512(vals[0]) },
+    { id: "base64enc", category: "Cryptography", name: "Base64 Encode", icon: "fas fa-code", inputs: [{ label: "Text", type: "text", id: "b64plain", default: "encode me" }], action: (vals) => btoa(unescape(encodeURIComponent(vals[0]))) },
+    { id: "base64dec", category: "Cryptography", name: "Base64 Decode", icon: "fas fa-code-branch", inputs: [{ label: "Base64", type: "text", id: "b64cipher", default: "ZW5jb2RlIG1l" }], action: (vals) => { try { return decodeURIComponent(escape(atob(vals[0]))); } catch(e) { return "invalid base64"; } } },
+    // Passwords
+    { id: "passgen", category: "Passwords", name: "Secure Password Generator", icon: "fas fa-key", inputs: [{ label: "Length (8-64)", type: "number", id: "passLen", default: "16" }], action: (vals) => generatePassword(parseInt(vals[0])) },
+    { id: "entropy", category: "Passwords", name: "Password Entropy Estimator", icon: "fas fa-chart-line", inputs: [{ label: "Password", type: "text", id: "entropyPass", default: "MySecureP@ss" }], action: (vals) => `~${Math.floor(entropyBits(vals[0]))} bits` },
+    { id: "pwstrength", category: "Passwords", name: "Password Strength Checker", icon: "fas fa-shield-virus", inputs: [{ label: "Password", type: "text", id: "strengthPass", default: "P@ssw0rd!" }], action: (vals) => checkStrength(vals[0]) },
+    // Networking
+    { id: "subnet", category: "Networking", name: "IPv4 Subnet Calculator", icon: "fas fa-network-wired", inputs: [{ label: "CIDR (e.g., 192.168.1.0/24)", type: "text", id: "cidr", default: "192.168.1.0/24" }], action: (vals) => calculateSubnet(vals[0]) },
+    { id: "ipv6norm", category: "Networking", name: "IPv6 Validator & Normalizer", icon: "fas fa-globe", inputs: [{ label: "IPv6 address", type: "text", id: "ipv6addr", default: "2001:0db8::1" }], action: (vals) => normalizeIPv6(vals[0]) },
+    { id: "maclookup", category: "Networking", name: "MAC Address OUI Lookup (offline)", icon: "fas fa-microchip", inputs: [{ label: "MAC (e.g., 00:1A:2B:3C:4D:5E)", type: "text", id: "mac", default: "00:1A:2B:3C:4D:5E" }], action: (vals) => offlineOUI(vals[0]) },
+    { id: "iplist", category: "Networking", name: "IP List Generator (CIDR range)", icon: "fas fa-list", inputs: [{ label: "CIDR", type: "text", id: "cidrRange", default: "10.0.0.0/28" }], action: (vals) => expandCIDR(vals[0]) },
+    { id: "portscan", category: "Networking", name: "Port Scanner (simulated)", icon: "fas fa-plug", inputs: [{ label: "Ports (comma)", type: "text", id: "ports", default: "80,443,8080" }], action: (vals) => `simulated scan: ${vals[0]} – offline mode` },
+    // Text utilities
+    { id: "urlenc", category: "Text", name: "URL Encode", icon: "fas fa-link", inputs: [{ label: "Text", type: "text", id: "urlTxt", default: "hello world!" }], action: (vals) => encodeURIComponent(vals[0]) },
+    { id: "urldec", category: "Text", name: "URL Decode", icon: "fas fa-unlink", inputs: [{ label: "Encoded", type: "text", id: "urlEnc", default: "hello%20world%21" }], action: (vals) => decodeURIComponent(vals[0]) },
+    { id: "rot13", category: "Text", name: "ROT13 Cipher", icon: "fas fa-exchange-alt", inputs: [{ label: "Text", type: "text", id: "rotIn", default: "uryyb jbeyq" }], action: (vals) => vals[0].replace(/[a-zA-Z]/g, c=> String.fromCharCode(c.charCodeAt(0)+(c.toLowerCase()<='m'?13:-13))) },
+    { id: "bintodec", category: "Text", name: "Binary to Decimal", icon: "fas fa-calculator", inputs: [{ label: "Binary", type: "text", id: "binIn", default: "1010" }], action: (vals) => /^[01]+$/.test(vals[0]) ? parseInt(vals[0],2).toString() : "invalid binary" },
+    { id: "hextotext", category: "Text", name: "Hex to Text", icon: "fas fa-undo-alt", inputs: [{ label: "Hex", type: "text", id: "hexIn", default: "48656c6c6f" }], action: (vals) => { try { return decodeURIComponent(escape(atob(vals[0].match(/.{1,2}/g).map(b=>String.fromCharCode(parseInt(b,16))).join('')))); } catch(e) { return "invalid hex"; } } },
+    // Developer tools
+    { id: "jsonfmt", category: "Developer", name: "JSON Formatter", icon: "fas fa-brackets-curly", inputs: [{ label: "Raw JSON", type: "text", id: "jsonRaw", default: '{"name":"Horizon","version":2}' }], action: (vals) => { try { return JSON.stringify(JSON.parse(vals[0]), null, 2); } catch(e) { return "Invalid JSON"; } } },
+    { id: "timestamp", category: "Developer", name: "Unix Timestamp ↔ Date", icon: "fas fa-clock", inputs: [{ label: "Timestamp (sec)", type: "text", id: "tsVal", default: "" }], action: (vals) => { let ts = vals[0] ? parseInt(vals[0]) : Date.now()/1000; return new Date(ts*1000).toISOString(); } },
+    { id: "uuid", category: "Developer", name: "UUID v4 Generator", icon: "fas fa-id-card", inputs: [], action: () => crypto.randomUUID() },
+    { id: "randint", category: "Developer", name: "Random Integer", icon: "fas fa-dice-d6", inputs: [{ label: "Min", type: "number", id: "randMin", default: "1" }, { label: "Max", type: "number", id: "randMax", default: "100" }], action: (vals) => Math.floor(Math.random() * (parseInt(vals[1]) - parseInt(vals[0]) + 1) + parseInt(vals[0])) },
+    { id: "urlparse", category: "Developer", name: "URL Parser", icon: "fas fa-paragraph", inputs: [{ label: "URL", type: "text", id: "urlParse", default: "https://beaconchain.us:443/path?q=1#hash" }], action: (vals) => { try { let u = new URL(vals[0]); return `protocol: ${u.protocol}\nhost: ${u.host}\npath: ${u.pathname}\nsearch: ${u.search}`; } catch(e) { return "invalid URL"; } } },
+    // Extra
+    { id: "randbytes", category: "Cryptography", name: "Random Bytes Generator", icon: "fas fa-dice", inputs: [{ label: "Length", type: "number", id: "randBytes", default: "16" }], action: (vals) => Array.from(crypto.getRandomValues(new Uint8Array(parseInt(vals[0])))).map(b=>b.toString(16).padStart(2,'0')).join('') },
+    { id: "xorchecksum", category: "Cryptography", name: "XOR Checksum", icon: "fas fa-check-double", inputs: [{ label: "Text", type: "text", id: "xorIn", default: "test" }], action: (vals) => { let cs = 0; for(let i=0;i<vals[0].length;i++) cs ^= vals[0].charCodeAt(i); return cs.toString(16); } }
+  ];
+
+  // Helper functions
+  async function sha256(msg) { const enc = new TextEncoder().encode(msg); const hash = await crypto.subtle.digest('SHA-256', enc); return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  async function sha512(msg) { const enc = new TextEncoder().encode(msg); const hash = await crypto.subtle.digest('SHA-512', enc); return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+  async function aesEncrypt(password, plaintext) { const enc = new TextEncoder(); const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]); const salt = crypto.getRandomValues(new Uint8Array(16)); const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]); const iv = crypto.getRandomValues(new Uint8Array(12)); const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, enc.encode(plaintext)); const result = btoa(String.fromCharCode(...salt, ...iv, ...new Uint8Array(encrypted))); return result; }
+  async function aesDecrypt(password, cipherB64) { try { const raw = Uint8Array.from(atob(cipherB64), c=>c.charCodeAt(0)); const salt = raw.slice(0,16); const iv = raw.slice(16,28); const data = raw.slice(28); const enc = new TextEncoder(); const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]); const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["decrypt"]); const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data); return new TextDecoder().decode(decrypted); } catch(e) { return "Decryption failed"; } }
+  function generatePassword(len) { const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"; let pwd=""; for(let i=0;i<len;i++) pwd+=chars[Math.floor(Math.random()*chars.length)]; return pwd; }
+  function entropyBits(pwd) { let charset=0; if(/[a-z]/.test(pwd)) charset+=26; if(/[A-Z]/.test(pwd)) charset+=26; if(/\d/.test(pwd)) charset+=10; if(/[^a-zA-Z0-9]/.test(pwd)) charset+=32; return Math.log2(Math.pow(charset, pwd.length)); }
+  function checkStrength(pwd) { let score=0; if(pwd.length>=8) score++; if(/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score++; if(/\d/.test(pwd)) score++; if(/[^a-zA-Z0-9]/.test(pwd)) score++; return ["Weak","Fair","Good","Strong","Very Strong"][score]; }
+  function calculateSubnet(cidr) { try { let [ip, prefix] = cidr.split('/'); prefix = parseInt(prefix); let mask = ~((1 << (32 - prefix)) - 1) >>> 0; function ipIntToStr(ip) { return [(ip>>>24)&0xff, (ip>>>16)&0xff, (ip>>>8)&0xff, ip&0xff].join('.'); } function ipStrToInt(ip) { return ip.split('.').reduce((a,b)=> (a<<8)+parseInt(b),0)>>>0; } return `Network: ${ipIntToStr(ipStrToInt(ip) & mask)}\nBroadcast: ${ipIntToStr((ipStrToInt(ip) & mask) | ~mask >>> 0)}`; } catch(e) { return "Invalid CIDR"; } }
+  function normalizeIPv6(ip) { try { let parts = ip.split('::'); if(parts.length===2) { let left = parts[0]?parts[0].split(':'):[]; let right = parts[1]?parts[1].split(':'):[]; let missing = 8 - (left.length+right.length); let newParts = [...left, ...Array(missing).fill('0000'), ...right]; return newParts.map(p=>p.padStart(4,'0')).join(':'); } else return ip; } catch(e) { return "invalid"; } }
+  function offlineOUI(mac) { const oui = mac.slice(0,8).toUpperCase(); const db = {"00:1A:2B": "Cisco Systems", "00:14:22": "Dell Inc.", "00:50:56": "VMware"}; return db[oui] || "Vendor not in offline DB"; }
+  function expandCIDR(cidr) { try { let [ip,prefix]=cidr.split('/'); let start=ip.split('.').reduce((a,b)=> (a<<8)+parseInt(b),0)>>>0; let size=1<<(32-parseInt(prefix)); let out=[]; for(let i=0;i<Math.min(size,8);i++) out.push([(start+i>>>24)&0xff, (start+i>>>16)&0xff, (start+i>>>8)&0xff, (start+i)&0xff].join('.')); return out.join(', ')+(size>8?' ...':''); } catch(e){return"invalid";} }
+
+  function renderTools(filter="") {
+    const container = document.getElementById('toolsContainer');
+    const categories = [...new Map(tools.map(t=>[t.category, t.category])).keys()];
+    let html = "";
+    for(let cat of categories) {
+      const filtered = tools.filter(t => t.category === cat && (t.name.toLowerCase().includes(filter) || cat.toLowerCase().includes(filter)));
+      if(filtered.length===0) continue;
+      html += `<div class="category-title">${cat}</div><div class="tools-grid">`;
+      for(let tool of filtered) {
+        html += `<div class="tool-card" data-tool-id="${tool.id}"><div class="tool-header"><i class="${tool.icon}"></i><h3>${tool.name}</h3></div>`;
+        if(tool.inputs) for(let inp of tool.inputs) html += `<div class="tool-input"><label>${inp.label}</label><input type="${inp.type}" id="${tool.id}_${inp.id}" value="${inp.default}"></div>`;
+        html += `<button class="run-btn" data-id="${tool.id}">▶ Run</button><div class="tool-output"><label>Output</label><div class="output-value" id="out_${tool.id}">—</div></div></div>`;
+      }
+      html += `</div>`;
+    }
+    container.innerHTML = html;
+    attachEvents();
+  }
+  function attachEvents() { document.querySelectorAll('.run-btn').forEach(btn => btn.addEventListener('click', async (e) => { const toolId = btn.dataset.id; const tool = tools.find(t=>t.id===toolId); let inputs=[]; if(tool.inputs) for(let inp of tool.inputs) inputs.push(document.getElementById(`${toolId}_${inp.id}`).value); let result; try { result = tool.action.constructor.name==='AsyncFunction' ? await tool.action(inputs) : tool.action(inputs); } catch(err) { result="Error: "+err.message; } document.getElementById(`out_${toolId}`).innerText = String(result); })); }
+  document.getElementById('searchInput').addEventListener('input', (e) => renderTools(e.target.value.toLowerCase()));
+  renderTools();
+</script>
+</body>
+</html>

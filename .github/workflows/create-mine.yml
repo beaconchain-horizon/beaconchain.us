@@ -13,12 +13,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-
-      - name: Create and push mine branch
+      - name: Create or update mine branch
         run: |
-          git checkout -b mine || echo "Branch mine already exists"
-          git push -u origin mine || echo "Branch mine already exists on remote"
+          # اگر برنچ محلی وجود ندارد، آن را بساز
+          if git show-ref --verify --quiet refs/heads/mine; then
+            echo "Branch 'mine' exists locally. Resetting it to main..."
+            git branch -f mine main
+          else
+            echo "Creating branch 'mine' from main..."
+            git checkout -b mine
+          fi
+
+          # بررسی وجود برنچ روی ریموت
+          if git ls-remote --heads origin mine | grep -q mine; then
+            echo "Branch 'mine' exists on remote. Pushing latest changes..."
+            git push origin mine --force
+          else
+            echo "Branch 'mine' does not exist on remote. Creating and pushing..."
+            git push -u origin mine
+          fi

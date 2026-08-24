@@ -1,0 +1,34 @@
+This commit introduces a comprehensive redesign of the Horizon Store with the following updates:
+
+🔹 Pricing Updates:
+- API packages: Basic ($5.20 → $7.00), Pro ($39.00 → $49.00), Enterprise ($260.00 → $320.00)
+- Ad packages: Job ($13.00 → $15.00), Digital Product ($20.80 → $25.00), Freelance Service ($7.80 → $10.00)
+
+🔹 New Features:
+- Full acquisition packages: Core ($3M–$5M), Standard ($5M–$10M), Enterprise ($10M–$15M)
+- Customer profile section with editable fields (username, full name, phone, bio, color, national ID)
+- Real-time news section with 6 live crypto news sources
+- Integrated Telegram link: @Beaconchain_horizon
+
+🔹 Technical Updates:
+- SHA-256 digital signature for page integrity verification
+- Offline-ready architecture with localStorage caching
+- Responsive design optimized for all devices
+- Enhanced UI/UX with glass-morphism design language
+
+🔹 Security:
+- CSP headers implemented
+- XSS protection
+- No hardcoded sensitive data
+
+🔹 Profile Fields:
+- Username: Beaconchain_horizon (read-only)
+- Full Name: Mahdi Amolimoghaddam
+- Phone: +98 915 030 7005
+- Bio: Editable
+- Color Picker: Customizable
+- National ID: Editable
+
+This update positions Horizon Store as a complete ecosystem with transparent pricing, professional profile management, and seamless integration with external services.
+
+Signed-off-by: Mahdi Amolimoghaddam <beaconchain@beaconchain.us>

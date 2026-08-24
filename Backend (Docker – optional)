@@ -6,32 +6,60 @@ services:
     container_name: beaconchain-db
     environment:
       POSTGRES_USER: beaconchain
-      POSTGRES_PASSWORD: your_strong_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: beaconchain
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
+    env_file:
+      - .env
+
+  prysm-beacon:
+    image: gcr.io/prysmaticlabs/prysm/beacon-chain:latest
+    container_name: prysm-beacon
+    command:
+      - --accept-terms-of-use
+      - --chain-config-file=/config/config.yml
+      - --datadir=/data
+      - --rpc-host=0.0.0.0
+      - --grpc-gateway-host=0.0.0.0
+      - --monitoring-host=0.0.0.0
+      - --execution-endpoint=http://execution:8551
+      - --jwt-secret=/config/jwt.hex
+    ports:
+      - "3500:3500"   # gRPC Gateway
+      - "4000:4000"   # gRPC
+    volumes:
+      - prysm-data:/data
+      - ./config:/config
+    restart: unless-stopped
+    depends_on:
+      - execution
 
   explorer:
     image: gobitfly/eth2-beaconchain-explorer:latest
     container_name: beaconchain-explorer
     depends_on:
       - postgres
+      - prysm-beacon
     ports:
-      - "3500:3500"
+      - "8080:8080"
     environment:
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_USER=beaconchain
-      - POSTGRES_PASSWORD=your_strong_password
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=beaconchain
       - CHAIN_NAME=mainnet
-      - ETH2_CONFIG=http://your-beacon-node:3500  # آدرس node بیکن خودتان
-      - WEB_PORT=3500
+      - ETH2_CONFIG=http://prysm-beacon:3500
+      - WEB_PORT=8080
       - ENABLE_EXPLORER=true
     restart: unless-stopped
+    env_file:
+      - .env
 
 volumes:
   postgres-data:
+  prysm-data:

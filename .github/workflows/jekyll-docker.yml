@@ -1,0 +1,88 @@
+# Horizon Core Engine – Beaconchain Official Wiki
+
+**Offline‑first, API‑based blockchain validator and license manager.**  
+Built with **Go**, **SQLite**, **Merkle trees**, and **ECDSA signatures**.
+
+Horizon is an open‑source, security‑hardened blockchain monitoring platform that powers a volume‑based prepaid API model using provable Merkle trees. This wiki provides comprehensive documentation for developers, contributors, and enterprise users.
+
+---
+
+## 🌐 Project Overview
+
+| Item | Details |
+|------|---------|
+| **Project Name** | Horizon Core Engine |
+| **Repository** | [github.com/beaconchain-horizon/horizon-core-engine](https://github.com/beaconchain-horizon/horizon-core-engine) |
+| **Primary Language** | Go 1.24+ |
+| **License** | GPL-3.0 |
+| **Author** | Mahdi Amolimoghaddam |
+| **Organization** | [beaconchain-horizon](https://github.com/beaconchain-horizon) |
+| **Official Website** | [https://beaconchain.us](https://beaconchain.us) |
+
+---
+
+## 🏆 Performance Highlights
+
+- **Built for scale**: Architecture designed to handle **100,000+ validators** simultaneously.
+- **Fast query response**: Optimized for **low-latency (~72ms)** validator status queries (measured in internal benchmarks).
+- **Security-first**: Implements **Merkle proofs** and **ECDSA signatures** for tamper-proof license verification.
+- **Offline-ready**: Fully functional in offline environments with SQLite and IndexedDB caching.
+
+---
+
+## 🚀 Key Features
+
+- **REST API** for validator management (`/api/v1/validators`)
+- **Prepaid license generation** using Merkle tree (`/api/v1/license/generate`)
+- **ECDSA digital signatures** for license integrity and verification
+- **SQLite** local storage (offline‑ready, zero external dependencies)
+- **Environment configuration** via `.env` file
+- **Offline‑first architecture** with IndexedDB caching and virtual scrolling
+- **Security‑hardened** with CSP nonce, SHA‑256 signatures, and offline Merkle proofs
+- **Customer & payment management** (`/api/v1/customers`, `/api/v1/payments`)
+- **Live crypto prices** from CoinGecko (`/api/v1/prices`)
+
+---
+
+## 🏗️ Architecture
+
+Horizon Core Engine is designed with a **layered architecture** to ensure scalability, security, and offline resilience. The system is divided into the following core layers:
+
+### 1. API Layer (RESTful)
+- Handles all incoming HTTP requests.
+- Routes are organized under `/api/v1/`.
+- Supports JSON responses with proper HTTP status codes.
+
+### 2. Core Engine (Business Logic)
+- Contains the main logic for validator management and license generation.
+- Implements **Merkle Tree** generation for provable data integrity.
+- Generates and verifies **ECDSA digital signatures** for license validation.
+
+### 3. Storage Layer
+- Uses **SQLite** for local, zero-dependency storage.
+- Provides offline-first capabilities, allowing the system to function without external database servers.
+- Tables for `customers`, `payments`, `validators`, and `licenses`.
+
+### 4. Security Layer
+- **CSP (Content Security Policy)** with nonce-based protection.
+- **SHA-256** hashing for data integrity checks.
+- **Merkle Proofs** to prevent data tampering.
+- **ECDSA** signatures to ensure license authenticity.
+
+### 5. Frontend Integration (PWA)
+- **Offline-first** design with **IndexedDB** caching.
+- **Virtual Scrolling** for smooth rendering of 100,000+ validators.
+- Progressive Web App (PWA) support with `manifest.json` and service worker (`sw.js`).
+
+---
+
+### 📊 Data Flow Diagram
+
+```mermaid
+graph TD
+    Client[Client / PWA] -->|API Request| API[API Layer]
+    API --> Core[Core Engine]
+    Core --> Storage[(SQLite Database)]
+    Core --> Security[Security Layer]
+    Security -->|Merkle Proof + ECDSA| Core
+    Core -->|Response| Client

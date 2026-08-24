@@ -1,4 +1,34 @@
-git clone https://github.com/beaconchain-com/Beaconchain.us
-cd Beaconchain.us/mobile   # if separate folder
-npm install
-npx expo start
+# Beaconchain.us – Mobile App (Horizon)
+
+**Offline‑first, API‑based blockchain validator and license manager for Ethereum Beacon Chain.**  
+Built with **React Native / Expo**, **Go**, **SQLite**, **Merkle trees**, and **ECDSA signatures**.
+
+This mobile application is the official companion to the Horizon Core Engine. It provides real‑time validator monitoring, live crypto prices, and secure license management — all in a mobile‑first, offline‑ready interface.
+
+---
+
+## 📱 Features
+
+- **Live Validator Dashboard** – Monitor 100K+ validators with real‑time balances, effective balances, and income (1d / 7d / 14d / 30d / total).
+- **Offline‑First Architecture** – Uses IndexedDB (web) and SQLite (native) for local caching, ensuring functionality even without an internet connection.
+- **Secure License Management** – Volume‑based prepaid API model with Merkle proofs and ECDSA digital signatures for tamper‑proof integrity.
+- **Live Crypto Prices** – Integrated with CoinGecko API for up‑to‑date ETH/USD pricing.
+- **PWA Support** – Installable on mobile devices via `manifest.json` and service worker (`sw.js`).
+
+---
+
+## 🛠️ Prerequisites
+
+- **Node.js** (v18 or higher)
+- **Expo CLI** (install globally via `npm install -g expo-cli`)
+- **Git**
+- **Android Studio** or **Xcode** (optional, for emulator/simulator)
+
+---
+
+## 🚀 Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/beaconchain-horizon/beaconchain.us.git
+   cd beaconchain.us
